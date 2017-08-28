@@ -1,4 +1,36 @@
 #! /usr/bin/env python3
+# ------------------
+# Sample xml file
+# ------------------
+# <background>
+#
+# <starttime>
+#   <year>2017</year>
+#   <month>08</month>
+#   <day>23</day>
+#   <hour>13</hour>
+#   <minute>51</minute>
+#   <second>55</second>
+# </starttime>
+#
+# <static>
+#   <duration>5760.0</duration>
+#   <!-- how long to show the picture -->
+#   <file>/home/moon1.jpg</file>
+# </static>
+# <transition type='overlay'>
+#   <duration>5760.0</duration>
+#   <from>/home/moon1.jpg</from>
+#   <to>/home/moon2.jpg</to>
+# </transition>
+# <static>
+#   <duration>5760.0</duration>
+#   <file>/home/moon2.jpg</file>
+# </static>
+#
+# </background>
+# ------------------
+
 import argparse
 import os
 import datetime
@@ -6,6 +38,7 @@ import random
 import xml.etree.ElementTree as ET
 
 class AutoBackground():
+    # Class to generate the xml file
     def __init__(self,
                  figpath,
                  transition=None,
@@ -16,44 +49,17 @@ class AutoBackground():
         self.xml = dict()
         self.xml['background'] = ET.Element('background')
         self.__xmlstarttime()
+        self.transition = self.__transition(transition)
         self.duration = self.__duration(randomtime, duration)
-        self.__xmlfigpath(transition)
+        self.__xmlfigpath()
         self.et = ET.ElementTree(self.xml['background'])
 
     def getet(self):
         # return the ElementTree
         return self.et
 
-    def __duration(self, randomtime, duration):
-        # generate duration time list
-        if isinstance(duration, list):
-            if len(duration) == len(self.figpath):
-                 result = [str(x) for x in duration]
-            else:
-                for i in range(
-                        len(self.figpath) // len(duration) + 1
-                ):
-                    duration += duration
-                result = [
-                    str(duration[i]) for i in range(len(self.figpath))
-                ]
-        elif isinstance(duration, float) or isinstance(duration, int):
-            result = [
-                str(duration) for i in range(len(self.figpath))
-            ]
-        elif randomtime:
-            result = [
-                str(random.randint(15 * 60, 120 * 60))
-                for i in range(len(self.figpath))
-            ]
-        else:
-            result = [
-                str(round(86400 / len(self.figpath), 2))
-                for i in range(len(self.figpath))
-            ]
-        return result
-
     def __xmlstarttime(self):
+        # make the start time block
         self.xml['starttime'] = ET.SubElement(
             self.xml['background'], 'starttime'
         )
@@ -71,12 +77,68 @@ class AutoBackground():
                 getattr(self.starttime, timename)
             )
 
-    def __xmlfigpath(self, transition):
-        if transition:
-            print('under development')
-            pass
+    def __transition(self, transition):
+        if not isinstance(transition, list):
+            # transition with only one value
+            result = [
+                'static' for i in range(len(self.figpath))
+            ]
         else:
-            for i in range(len(self.figpath)):
+            # transition gaven as a list
+            transition = [x for x in transition if x != 'static']
+            if len(self.figpath) - 1 > len(transition):
+                transition = transition * (
+                    len(self.figpath) - 1 // len(transition)
+                )
+            else:
+                pass
+            result = ['static'] * (len(self.figpath) * 2 -1)
+            for i in range(len(self.figpath) * 2 - 1):
+                if i % 2 == 1:
+                    result[i] = transition[(i-1) // 2]
+                else:
+                    pass
+        return result
+
+    def __duration(self, randomtime, duration):
+        # generate duration time list
+        if isinstance(duration, list):
+            # get the time from input
+            if len(duration) == len(self.transition):
+                 result = [str(x) for x in duration]
+            else:
+                for i in range(
+                        len(self.transition) // len(duration) + 1
+                ):
+                    duration += duration
+                result = [
+                    str(duration[i]) for i in range(len(self.transition))
+                ]
+        elif isinstance(duration, float) or isinstance(duration, int):
+            # expand one time input to the length of figure list
+            result = [
+                str(duration) for i in range(len(self.transition))
+            ]
+        elif randomtime:
+            #  generate random time
+            result = [
+                str(random.randint(15 * 60, 120 * 60))
+                for i in range(len(self.transition))
+            ]
+        else:
+            # generate averaged duration time
+            result = [
+                str(round(86400 / len(self.transition), 2))
+                for i in range(len(self.transition))
+            ]
+        return result
+
+    def __xmlfigpath(self):
+        # make the picture block acording to the transition option
+        # default is static
+        if len(self.transition) == len(self.figpath):
+            # all the figure is static
+            for i in range(len(self.transition)):
                 self.xml['_'.join(['fig', str(i)])] = ET.SubElement(
                     self.xml['background'], 'static'
                 )
@@ -86,9 +148,38 @@ class AutoBackground():
                 ET.SubElement(
                     self.xml['_'.join(['fig', str(i)])], 'file'
                 ).text = self.figpath[i]
+        else:
+            # figures have transition
+            for i in range(len(self.transition)):
+                if self.transition[i] == 'static':
+                    self.xml['_'.join(['fig', str(i)])] = ET.SubElement(
+                        self.xml['background'], 'static'
+                    )
+                    ET.SubElement(
+                        self.xml['_'.join(['fig', str(i)])], 'duration'
+                    ).text = self.duration[i]
+                    ET.SubElement(
+                        self.xml['_'.join(['fig', str(i)])], 'file'
+                    ).text = self.figpath[i // 2]
+                else:
+                    self.xml['_'.join(['fig', str(i)])] = ET.SubElement(
+                        self.xml['background'], 'transition',
+                        attrib={'type': self.transition[i]}
+                    )
+                    ET.SubElement(
+                        self.xml['_'.join(['fig', str(i)])], 'duration'
+                    ).text = self.duration[i]
+                    ET.SubElement(
+                        self.xml['_'.join(['fig', str(i)])], 'from'
+                    ).text = self.figpath[(i - 1) // 2]
+                    ET.SubElement(
+                        self.xml['_'.join(['fig', str(i)])], 'to'
+                    ).text = self.figpath[(i + 1) // 2]
+
 
 
 if __name__ == '__main__':
+    # parse arguments
     parser = argparse.ArgumentParser(
         prog='autobackground',
         description='Make auto change background of gnome desktop'
@@ -134,8 +225,9 @@ if __name__ == '__main__':
     parser.add_argument(
         '-x', '--transition',
         action='store',
+        nargs='*',
         default=None,
-        choices=['overlay'],
+        choices=['static', 'overlay'],
         help='Set duration time to random time.'
     )
 
