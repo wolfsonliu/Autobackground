@@ -46,4 +46,10 @@ $ ./autobackground -d Background
 
 # bing_daily #
 
-Download bing daily figures and change background.
+* Download bing daily figures and change background.
+* The osx file is used for Mac OS.
+
+# nasa_daily #
+
+* Donwload NASA image of the day and change background.
+* The osx file is used for Mac OS.

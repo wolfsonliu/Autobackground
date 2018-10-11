@@ -1,11 +1,11 @@
 #! /bin/bash
-BG_DIR=$HOME/Pictures/Wallpapers
-BING_ADDR="https://www.bing.com"
-JSON_LINK="http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1"
+BG_DIR=$HOME/Pictures/NASA
+RSS_LINK="https://www.nasa.gov/rss/dyn/lg_image_of_the_day.rss"
 
-JSON=$(curl ${JSON_LINK} 2>/dev/null)
+RSS=$(curl ${RSS_LINK} 2>/dev/null)
 
-FIG_LINK=${BING_ADDR}$(echo ${JSON} | tr ',' '\n' | grep \"url\" | cut -d: -f 2 | tr -d '"')
+FIG_LINK=$(echo ${RSS} | tr '><' '\n'| grep enclosure | head -1 | tr '"' '\n' | grep http)
+
 FIG_NAME=${FIG_LINK##*/}
 
 wget -q ${FIG_LINK} -O ${BG_DIR}/${FIG_NAME}

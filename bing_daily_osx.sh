@@ -14,6 +14,5 @@ FIG_PREFIX=file://${BG_DIR}
 
 FIG_STR=${FIG_PREFIX}/${FIG_NAME}
 
-gsettings set org.gnome.desktop.background picture-uri ${FIG_STR}
-gsettings set org.gnome.desktop.screensaver picture-uri ${FIG_STR}
+osascript -e 'tell application "Finder" to set desktop picture to POSIX file "${FIG_PATH}"'
 ################################################################################
