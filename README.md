@@ -43,3 +43,7 @@ Then:
 $ chmod u+x autobackground
 $ ./autobackground -d Background
 ```
+
+# bing_daily #
+
+Download bing daily figures and change background.
