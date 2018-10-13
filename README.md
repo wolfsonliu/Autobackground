@@ -1,3 +1,18 @@
+# bing_daily #
+
+* Download bing daily figures and change background.
+* The osx file is used for Mac OS.
+
+# nasa_daily #
+
+* Download [NASA image of the day](https://www.nasa.gov/multimedia/imagegallery/iotd.html) and change background.
+* The osx file is used for Mac OS.
+
+# nasa_apod #
+
+* Download [NASA Astronomy Picture of the Day](https://apod.nasa.gov/apod/astropix.html).
+* The osx file is used for Mac OS.
+
 # autobackground #
 
 Generate xml file used by gnome desktop environment to change background automatically.
@@ -43,13 +58,3 @@ Then:
 $ chmod u+x autobackground
 $ ./autobackground -d Background
 ```
-
-# bing_daily #
-
-* Download bing daily figures and change background.
-* The osx file is used for Mac OS.
-
-# nasa_daily #
-
-* Donwload NASA image of the day and change background.
-* The osx file is used for Mac OS.
