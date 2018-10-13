@@ -2,6 +2,7 @@
 
 * Download bing daily figures and change background.
 * The osx file is used for Mac OS.
+* ps1 powershell is for Windows.
 
 # nasa_daily #
 
