@@ -1,4 +1,11 @@
 #! /bin/bash
+
+for x in $(ps -C gnome-session-b -o pid | tail -2); do
+    if [ $(stat -c %U /proc/${x}/environ) = $(whoami) ]; then
+        export $(xargs -0 -a "/proc/${x}/environ")
+    fi
+done
+
 BG_DIR=$HOME/Pictures/NASA
 PAGE_LINK="https://apod.nasa.gov/apod/"
 

@@ -1,4 +1,10 @@
 #! /bin/bash
+for x in $(ps -C gnome-session-b -o pid | tail -2); do
+    if [ $(stat -c %U /proc/${x}/environ) = $(whoami) ]; then
+        export $(xargs -0 -a "/proc/${x}/environ")
+    fi
+done
+
 BG_DIR=$HOME/Pictures/Wallpapers
 BING_ADDR="https://www.bing.com"
 JSON_LINK="http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1"

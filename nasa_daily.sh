@@ -1,4 +1,11 @@
 #! /bin/bash
+
+for x in $(ps -C gnome-session-b -o pid | tail -2); do
+    if [ $(stat -c %U /proc/${x}/environ) = $(whoami) ]; then
+        export $(xargs -0 -a "/proc/${x}/environ")
+    fi
+done
+
 BG_DIR=$HOME/Pictures/NASA
 RSS_LINK="https://www.nasa.gov/rss/dyn/lg_image_of_the_day.rss"
 

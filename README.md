@@ -4,6 +4,8 @@
 * The osx file is used for Mac OS.
 * ps1 powershell is for Windows.
 
+In linux use crontab to set the automatic job for bing_daily.
+
 # nasa_daily #
 
 * Download [NASA image of the day](https://www.nasa.gov/multimedia/imagegallery/iotd.html) and change background.

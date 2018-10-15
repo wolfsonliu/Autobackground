@@ -18,6 +18,7 @@ $wc.DownloadFile($imgurl,$savelocation);
 # Set-ItemProperty -path "HKCU:\Control Panel\Desktop\" -name WallPaper -value $savelocation
 # rundll32.exe user32.dll, UpdatePerUserSystemParameters
 
+# https://stackoverflow.com/questions/9440135/powershell-script-from-shortcut-to-change-desktop
 Add-Type @"
 using System;
 using System.Runtime.InteropServices;
