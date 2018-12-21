@@ -9,6 +9,7 @@ while (!(Test-Connection bing.com -quiet -count 1)){Start-Sleep -s 1}
 # Setup query to get bing image
 $web = New-Object Net.WebClient
 $imghighres = $web.DownloadString("http://www.bing.com/HPImageArchive.aspx?format=xml&idx=0&n=1").Split('<>')[20]
+$imghighres = $imghighres -Replace '\d{3,4}x\d{3,4}', '1920x1080'
 $imgurl = "http://www.bing.com" + $imghighres
 $imgpath = $savelocation + $imgurl.Split('/')[6]
 # Download figure
