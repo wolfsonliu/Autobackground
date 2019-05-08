@@ -1,21 +1,19 @@
-#! /bin/bash
-for x in $(ps -C gnome-session-b -o pid | tail -1); do
+#! /usr/bin/bash
+for x in $(ps -C gnome-session-b -o pid | tail -2); do
     if [ $(stat -c %U /proc/${x}/environ) = $(whoami) ]; then
         export $(xargs -0 -a "/proc/${x}/environ")
     fi
 done
 
-BG_DIR=$HOME/Pictures/Wallpapers
-BING_ADDR="https://www.bing.com"
-JSON_LINK="http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1"
 
-JSON=$(curl ${JSON_LINK} 2>/dev/null)
+BG_DIR=$HOME/Pictures/NationalGeographic
+if [ ! -e ${BG_DIR} ]; then
+    mkdir -p ${BG_DIR}
+fi
 
-FIG_LINK=${BING_ADDR}$(echo ${JSON} | tr ',' '\n' | grep \"url\" | cut -d: -f 2 | tr -d '"')
-FIG_NAME=${FIG_LINK##*/}
-FIG_NAME=${FIG_NAME%%&*}
-FIG_NAME=${FIG_NAME##*=}
-FIG_PATH=${BG_DIR}/${FIG_NAME}
+FIG_LINK=`wget -q https://www.nationalgeographic.com/photography/photo-of-the-day/ -O - | tr ' ' '\n' | tr '"' '\n' | grep yourshot | head -1`
+
+FIG_PATH=${BG_DIR}/$(date -I'date').jpg
 
 if [ ! -e ${FIG_PATH} ]; then
     wget -q ${FIG_LINK} -O ${FIG_PATH}
