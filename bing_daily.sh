@@ -1,7 +1,9 @@
 #! /bin/bash
 for x in $(ps -C gnome-session-b -o pid | tail -1); do
-    if [ $(stat -c %U /proc/${x}/environ) = $(whoami) ]; then
-        export $(xargs -0 -a "/proc/${x}/environ")
+    if [ $(lsb_release -d | grep -i ubuntu | wc -l) -gt 0 ]; then
+        if [ $(stat -c %U /proc/${x}/environ) = $(whoami) ]; then
+            export $(xargs -0 -a "/proc/${x}/environ")
+        fi
     fi
 done
 
