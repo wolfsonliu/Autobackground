@@ -10,8 +10,8 @@ FIG_PATH=${BG_DIR}/${FIG_NAME}
 
 if [ ! -e ${FIG_PATH} ]; then
     wget -q ${FIG_LINK} -O ${FIG_PATH}
+    SCRIPT='tell application "Finder" to set desktop picture to POSIX file '\"${FIG_PATH}\"
+    osascript -e "${SCRIPT}"
 fi
 
-SCRIPT='tell application "Finder" to set desktop picture to POSIX file '\"${FIG_PATH}\"
-osascript -e "${SCRIPT}"
 ################################################################################

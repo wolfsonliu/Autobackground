@@ -21,10 +21,13 @@ FIG_PATH=${BG_DIR}/${FIG_NAME}
 
 if [ ! -e ${FIG_PATH} ]; then
     wget -q ${FIG_LINK} -O ${FIG_PATH}
+    AUTHOR_INFO=$(curl -s cn.bing.com | sed -nE 's/.*<a id="sh_cp" class="sc_light" title="(.*)" aria-label="主页图片信息" role="button".*/\1/p')
+    echo -e $(date -I'date') "\t" ${FIG_NAME} "\t" ${AUTHOR_INFO} >> ${BG_DIR}/author.txt
+    FIG_STR=file://${FIG_PATH}
+    gsettings set org.gnome.desktop.background picture-uri ${FIG_STR}
+    gsettings set org.gnome.desktop.screensaver picture-uri ${FIG_STR}
+    echo ${AUTHOR_INFO}
 fi
 
-FIG_STR=file://${FIG_PATH}
 
-gsettings set org.gnome.desktop.background picture-uri ${FIG_STR}
-gsettings set org.gnome.desktop.screensaver picture-uri ${FIG_STR}
 ################################################################################

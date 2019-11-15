@@ -1,21 +1,3 @@
-# Set location of the background
-$savelocation = "$env:USERPROFILE\Pictures\"
-# Check if we have internet, extra protection over Scheduled Task
-while (!(Test-Connection bing.com -quiet -count 1)){Start-Sleep -s 1}
-
-# Check if bing image already exists and remove it (old image)
-# if (Test-Path $savelocation){Remove-Item $savelocation}
-
-# Setup query to get bing image
-$web = New-Object Net.WebClient
-$imghighres = $web.DownloadString("http://www.bing.com/HPImageArchive.aspx?format=xml&idx=0&n=1").Split('<>')[20]
-$imghighres = $imghighres -Replace '\d{3,4}x\d{3,4}', '1920x1080'
-$imgurl = "http://www.bing.com" + $imghighres
-$imgpath = $savelocation + $imgurl.Split('/')[6]
-# Download figure
-$wc = New-Object Net.WebClient
-$wc.DownloadFile($imgurl,$imgpath);
-
 # Set-ItemProperty -path "HKCU:\Control Panel\Desktop\" -name WallPaper -value $savelocation
 # rundll32.exe user32.dll, UpdatePerUserSystemParameters
 
@@ -62,4 +44,23 @@ namespace Wallpaper
 }
 "@
 
-[Wallpaper.Setter]::SetWallpaper($imgpath, 2)
+# Set location of the background
+$savelocation = "$env:USERPROFILE\Pictures\"
+# Check if we have internet, extra protection over Scheduled Task
+#while (!(Test-Connection bing.com -quiet -count 1)) {Start-Sleep -s 1}
+
+# Check if bing image already exists and remove it (old image)
+# if (Test-Path $savelocation){Remove-Item $savelocation}
+
+# Setup query to get bing image
+$web = New-Object Net.WebClient
+$imghighres = $web.DownloadString("http://www.bing.com/HPImageArchive.aspx?format=xml&idx=0&n=1").Split('<>')[20]
+$imghighres = $imghighres -Replace '\d{3,4}x\d{3,4}', '1920x1080'
+$imgurl = "http://www.bing.com" + $imghighres
+$imgpath = $savelocation + $imgurl.Split('/')[3].Split('=')[1].Split('&')[0]
+# Download figure
+if (!(Test-Path $imgpath)) {
+    $wc = New-Object Net.WebClient
+    $wc.DownloadFile($imgurl,$imgpath);
+    [Wallpaper.Setter]::SetWallpaper($imgpath, 2)
+}
