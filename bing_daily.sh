@@ -1,11 +1,11 @@
 #! /bin/bash
-for x in $(ps -C gnome-session-b -o pid | tail -1); do
-    if [ $(lsb_release -d | grep -i ubuntu | wc -l) -gt 0 ]; then
-        if [ $(stat -c %U /proc/${x}/environ) = $(whoami) ]; then
-            export $(xargs -0 -a "/proc/${x}/environ")
-        fi
-    fi
-done
+# for x in $(ps -C gnome-session-b -o pid | tail -1); do
+#     if [ $(lsb_release -d | grep -i ubuntu | wc -l) -gt 0 ]; then
+#         if [ $(stat -c %U /proc/${x}/environ) = $(whoami) ]; then
+#             export $(xargs -0 -a "/proc/${x}/environ")
+#         fi
+#     fi
+# done
 
 BG_DIR=$HOME/Pictures/Wallpapers
 BING_ADDR="https://www.bing.com"
@@ -25,7 +25,8 @@ if [ ! -e ${FIG_PATH} ]; then
     echo -e $(date -I'date') "\t" ${FIG_NAME} "\t" ${AUTHOR_INFO} >> ${BG_DIR}/author.txt
     FIG_STR=file://${FIG_PATH}
     gsettings set org.gnome.desktop.background picture-uri ${FIG_STR}
-    gsettings set org.gnome.desktop.screensaver picture-uri ${FIG_STR}
+    gsettings set org.gnome.desktop.background picture-uri-dark ${FIG_STR}
+    # gsettings set org.gnome.desktop.screensaver picture-uri ${FIG_STR}
     echo ${AUTHOR_INFO}
 fi
 
